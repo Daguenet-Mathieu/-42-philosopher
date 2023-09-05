@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 04:59:27 by madaguen          #+#    #+#             */
-/*   Updated: 2023/07/01 04:59:53 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/05 16:55:59 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_init
 	int			nb_philo;
 	int			time_die;
 	int			time_eat;
-	int			time_sleep;
+	int				time_sleep;
 }				t_init;
 
 typedef struct s_env
@@ -55,6 +55,7 @@ typedef struct s_env
 typedef struct s_philo
 {
 	t_init			*data;
+	int				time_think;
 	pthread_mutex_t	*fork_left;
 	pthread_mutex_t	*fork_right;
 	t_mutex			*last_meal;
