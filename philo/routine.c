@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:20:06 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/05 17:28:22 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/07 20:26:40 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,26 +40,21 @@ int	is_end(t_philo *philo)
 
 void	ft_usleep(int time, t_philo *philo)
 {
-	t_ull	time_slepped;
+	t_ull	time_start;
 
-	time_slepped = get_time();
+	time_start = get_time();
 	while (1)
 	{
-		usleep(50);
+		usleep(500);
 		if (is_end(philo) <= 1)
 			break ;
-		if (time_slepped + time/1000 <= get_time())
+		if (time_start + time/1000 <= get_time())
 			return ;
 	}
 }
 
 void	eating(t_philo *philo)
 {
-	int		sleep_time;
-	int		current_time;
-	int		is_alive;
-
-	sleep_time = 0;
 	if (!take_fork(philo))
 	{
 		ft_usleep(philo->data->time_die * 1000, philo);

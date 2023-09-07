@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitoring.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:18:37 by madaguen          #+#    #+#             */
-/*   Updated: 2023/06/30 20:18:40 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/07 20:27:39 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	check_death(t_philo *philo, t_init init, int *index)
 		pthread_mutex_lock(&philo[*index].last_meal->mutex);
 		last_meal = philo[*index].last_meal->value;
 		pthread_mutex_unlock(&philo[*index].last_meal->mutex);
-		if (now > last_meal && (now - last_meal) > init.time_die)
+		if (now > last_meal && (now - last_meal) > (t_ull)init.time_die)
 			return (0);
 		(*index)++;
 	}

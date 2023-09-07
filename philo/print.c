@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:19:02 by madaguen          #+#    #+#             */
-/*   Updated: 2023/06/30 20:19:49 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/07 20:28:01 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	print(char *s, t_philo *philo)
 	start_time = philo->data->start_time;
 	pthread_mutex_lock(&philo->data->check_life->mutex);
 	is_alive = philo->data->check_life->value;
-	if (is_alive >= 2 || (is_alive <= 1) && ft_strcmp(s, "died"))
+	if (is_alive >= 2 || ((is_alive <= 1) && ft_strcmp(s, "died")))
 	{
 		now = get_time();
 		printf("%llu %d %s\n", now - start_time, philo->philo_id, s);
