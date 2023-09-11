@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:20:06 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/07 20:26:40 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/11 18:38:54 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	ft_usleep(int time, t_philo *philo)
 	time_start = get_time();
 	while (1)
 	{
-		usleep(500);
+		usleep(5000);
 		if (is_end(philo) <= 1)
 			break ;
 		if (time_start + time/1000 <= get_time())

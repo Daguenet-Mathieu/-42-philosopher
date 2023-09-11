@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:34:47 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/06 21:36:41 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/09 23:14:51 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,9 @@ int	main(int ac, char **av)
 	if (!check_args(ac, av, &env.init))
 		return (1);
 	if (!init_mutex(&env, &philo))
-		return (print_error("fail init mutex\n")
-			, free(env.last_meal), free(env.fork), 1);
+		return (print_error("fail init mutex\n"), 1);
 	if (!init_philo(&env, philo))
-		return (print_error("fail init thread\n")
-			, free(env.last_meal), free(env.fork), 1);
+		print_error("fail create thread\n");
 	monitoring(&env, philo);
 	destroy_env(&env, philo);
 }	

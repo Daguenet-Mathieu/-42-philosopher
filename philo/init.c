@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:18:10 by madaguen          #+#    #+#             */
-/*   Updated: 2023/06/30 20:18:13 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/11 17:50:16 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,52 @@ int	check_args(int ac, char **av, t_init *init)
 	return (1);
 }
 
+int create_meal(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (i < env->init.nb_philo)
+	{
+		if (pthread_mutex_init(&env->fork[i], NULL))
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int	create_fork(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (i < env->init.nb_philo)
+	{
+		if (pthread_mutex_init(&env->fork[i], NULL))
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+void	del_fork(int i, t_env *env)
+{
+	while (i >= 0)
+	{
+		pthread_mutex_destroy(&env->fork[i]);
+		i--;
+	}
+}
+
+void	del_meal(int i, t_env *env)
+{
+	while (i >= 0)
+	{
+		pthread_mutex_destroy(&env->fork[i]);
+		i--;
+	}
+}
+
 int	init_mutex(t_env *env, t_philo **philo)
 {
 	int	i;
@@ -55,14 +101,16 @@ int	init_mutex(t_env *env, t_philo **philo)
 	env->last_meal = malloc(sizeof(t_mutex) * env->init.nb_philo);
 	if (!env->last_meal)
 		return (free(*philo), free(env->fork), print_error("alloc meal\n"), 0);
-	while (i < env->init.nb_philo)
-	{
-		pthread_mutex_init(&env->fork[i], NULL);
-		pthread_mutex_init(&env->last_meal[i].mutex, NULL);
-		i++;
-	}
-	pthread_mutex_init(&env->check_life.mutex, NULL);
-	pthread_mutex_init(&env->full.mutex, NULL);
+	i = create_fork(env);
+	if (i != -1)
+		return (free(*philo), free(env->last_meal), free(env->fork), 0);
+	i = create_meal(env);
+	if (i != -1)
+		return (free(*philo), free(env->last_meal), free(env->fork), del_meal(i, env), 0);
+	if (pthread_mutex_init(&env->check_life.mutex, NULL))
+		return (del_fork(env->init.nb_philo, env), del_meal(env->init.nb_philo, env), free(env->fork), free(philo), free(env->last_meal),0);
+	if (pthread_mutex_init(&env->full.mutex, NULL))
+		return (del_fork(env->init.nb_philo, env), del_meal(env->init.nb_philo, env), free(env->fork), pthread_mutex_destroy(&env->check_life.mutex), free(env->last_meal),free(philo), 0);
 	env->check_life.value = 2;
 	env->init.check_life = &env->check_life;
 	env->full.value = 0;
@@ -98,9 +146,9 @@ int	init_philo(t_env *env, t_philo *philo)
 	//	printf("data check_life de philo dans juste avant == %p\n", philo[i].data->check_life);
 	//	printf("data check life youhou c'eat pas printf c'est moi le debile??? philo[i] == %p\n", &philo[i]);
 		if (pthread_create(&philo[i].thread_id, NULL, in_thread, &philo[i]))
-			return (0);
+			return (i);
 	//	printf("data philo dans juste apres == %p\n", philo[i].data);
 		i++;
 	}
-	return (1);
+	return (0);
 }
