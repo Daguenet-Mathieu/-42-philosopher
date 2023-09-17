@@ -9,18 +9,19 @@ SRCS = philo/main.c\
 	philo/destroy.c\
 	philo/get_time.c\
 	philo/init.c\
+	philo/init_utils.c\
 	philo/mutex.c\
 	philo/monitoring.c\
 	philo/print.c\
 	philo/routine.c\
-
+	philo/mutex_create.c
 
 OBJS = $(SRCS:.c=.o)
 DEPS = $(SRCS:.c=.d)
 
 CC = cc
 
-FLAGS = -Wall -Werror -Wextra -g
+FLAGS = -Wall -Werror -Wextra -g #-fsanitize=address
 
 $(NAME) : $(OBJS) $(HEADER)
 		 $(CC) $(FLAGS) $(OBJS) -o $(NAME)

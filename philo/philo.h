@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 04:59:27 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/09 22:53:51 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/16 22:53:46 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,17 @@ typedef struct s_mutex
 
 typedef struct s_init
 {
-	t_ull		start_time;
-	t_mutex		*check_life;
-	t_mutex		*full;
-	int			nb_meal;
-	int			nb_philo;
-	int			time_die;
-	int			time_eat;
+	t_ull			start_time;
+	t_mutex			*check_life;
+	t_mutex			*full;
+	int				nb_meal;
+	int				nb_philo;
+	int				time_die;
+	int				time_eat;
 	int				time_sleep;
+	int				time_think;
+	pthread_mutex_t	*start;
+
 }				t_init;
 
 typedef struct s_env
@@ -50,12 +53,12 @@ typedef struct s_env
 	t_mutex			full;
 	t_mutex			*last_meal;
 	pthread_mutex_t	*fork;
+	pthread_mutex_t	start;
 }					t_env;
 
 typedef struct s_philo
 {
 	t_init			*data;
-	int				time_think;
 	pthread_mutex_t	*fork_left;
 	pthread_mutex_t	*fork_right;
 	t_mutex			*last_meal;
@@ -74,7 +77,7 @@ void	take_mutex(void *mutex, char *s, t_philo *philo);
 void	release_mutex(void *mutex);
 int		take_fork(t_philo *philo);
 void	release_fork(t_philo *philo);
-int		check_death(t_philo *philo, t_init init, int *index);
+int		check_death(t_philo *philo, t_init init, int *index, t_env *env);
 void	monitoring(t_env *env, t_philo *philo);
 int		verif_arg(char *s, int *nb);
 int		check_args(int ac, char **av, t_init *init);
@@ -89,5 +92,15 @@ void	ft_skip(char *s, int *i, int *sign);
 int		ft_isdigit(char c);
 int		ft_atoi(char *nbr, int *nb);
 t_ull	get_time(void);
+int		create_meal(t_env *env);
+int		create_fork(t_env *env);
+int		get_mutex(t_philo *philo, t_env *env);
+int		get_think_time(t_init *init);
+void	init_struct_philo(t_env *env, t_philo *philo, int i);
+void	set_death(t_env *env, int i);
+int		verif_arg(char *s, int *nb);
+int		check_args(int ac, char **av, t_init *init);
+void	del_meal(int i, t_env *env);
+void	del_fork(int i, t_env *env);
 
 #endif

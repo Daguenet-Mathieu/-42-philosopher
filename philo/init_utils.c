@@ -1,16 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   init_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/30 20:18:10 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/17 00:42:46 by madaguen         ###   ########.fr       */
+/*   Created: 2023/09/16 22:16:45 by madaguen          #+#    #+#             */
+/*   Updated: 2023/09/16 22:16:52 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	get_think_time(t_init *init)
+{
+	if (init->time_eat <= init->time_sleep)
+		return (500);
+	else
+		return ((((init->time_eat - 1) - init->time_sleep) + 2) * 1000);
+}
+
+void	init_struct_philo(t_env *env, t_philo *philo, int i)
+{
+	philo->philo_id = i + 1;
+	philo->data = &env->init;
+	philo->last_meal = &env->last_meal[i];
+	philo->last_meal->value = env->init.start_time;
+	philo->meal_eaten = 0;
+	philo->fork_right = &env->fork[i];
+	if (i == env->init.nb_philo - 1)
+		philo->fork_left = &env->fork[0];
+	else
+		philo->fork_left = &env->fork[i + 1];
+}
+
+void	set_death(t_env *env, int i)
+{
+	env->init.nb_philo = i;
+	pthread_mutex_lock(&env->init.check_life->mutex);
+	env->init.check_life->value = 0;
+	pthread_mutex_unlock(&env->init.check_life->mutex);
+}
 
 int	verif_arg(char *s, int *nb)
 {
@@ -39,4 +69,3 @@ int	check_args(int ac, char **av, t_init *init)
 	}
 	return (1);
 }
-
