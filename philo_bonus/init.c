@@ -6,7 +6,7 @@
 /*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:18:10 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/17 00:42:46 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/17 03:05:51 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,3 +40,21 @@ int	check_args(int ac, char **av, t_init *init)
 	return (1);
 }
 
+int	init_philo(t_env *env)
+{
+	int	i;
+	int	pid;
+	
+	i = 0;
+	while (i < env->init.nb_philo)
+	{
+		pid = fork();
+		if (pid == 0)
+			routine(*env, i + 1);
+		if (pid == -1)
+			return (printf("fail to create philo %d\n", i), 0);
+		//env->pid[i] = pid;
+		i++;
+	}
+	return (1);
+}

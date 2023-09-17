@@ -7,7 +7,7 @@ int main()
 {
     sem_t   *sem;
 
-    sem = sem_open("/fuck", O_CREAT, O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH, 25);
+    sem = sem_open("/testounet", O_CREAT, O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH, 25);
     if (!sem)
         return (printf("open rate\n"));
 

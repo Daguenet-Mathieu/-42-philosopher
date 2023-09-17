@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 04:59:27 by madaguen          #+#    #+#             */
-/*   Updated: 2023/07/01 04:59:53 by madaguen         ###   ########.fr       */
+/*   Updated: 2023/09/17 03:06:58 by madaguen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 # include <unistd.h>
 # include <string.h>
 # include <limits.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <semaphore.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <semaphore.h>
 
 typedef struct timeval		t_time;
 typedef unsigned long long	t_ull;
@@ -34,25 +34,25 @@ typedef struct s_init
 	int		time_die;
 	int		time_eat;
 	int		time_sleep;
-	t_ull	start_time;
+	t_ull	start_time;// a initialiser dans le thread ou dans le parent dans le futur et la simulation ne demarre que quand ce temps est atteint?
 
-}				t_init;
+}		t_init;
 
 typedef struct s_env
 {
-	sem_t	*check_life;
-	sem_t	*forks;
-	sem_t	*full;
+	sem_t	check_life;
+	sem_t	forks;
+	sem_t	full;
+	sem_t	start;
+	int	*philo_pid;
+	t_init	init;
 }		t_env;
 
-typedef struct s_philo
-{
-	int		philo_id;
-	int		philo_pid;
-	int		meal_eaten;
-	t_init	data;
-}			t_philo;
-
 t_ull   get_time();
+void	routine(t_env env, philo_index);
+int	verif_arg(char *s, int *nb);
+int	check_args(int ac, char **av, t_init *init);
+int	init_philo(t_env *env);
+int	init_sem(char *name, int value);
 
 #endif
