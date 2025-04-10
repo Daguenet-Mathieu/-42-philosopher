@@ -1,106 +1,98 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/01 04:59:27 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/16 22:53:46 by madaguen         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef PHILO_H
 # define PHILO_H
+# include <limits.h>
 
 # include <stdlib.h>
 # include <stdio.h>
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include <string.h>
+//# include <string.h> //?
 # include <limits.h>
+# include <stdbool.h>
 
-typedef struct timeval		t_time;
-typedef unsigned long long	t_ull;
+# define ARG_ERROR "Error: Incorrect number of arguments.\n\
+\tUsage: ./philo number_of_philosophers time_to_die time_to_eat\
+ time_to_sleep [optional: number_of_meals]\n"
+
+ #define ARG_TYPE_ERROR "Error: Incorrect argument type.\
+All arguments must be positive integers, \
+within the range of the maximum value of an int.\n"
+  
+
+typedef struct timeval	t_time;
 
 typedef struct s_mutex
 {
-	t_ull			value;
+	size_t			value;
 	pthread_mutex_t	mutex;
+}t_mutex;
 
-}					t_mutex;
-
-typedef struct s_init
+typedef struct s_data
 {
-	t_ull			start_time;
-	t_mutex			*check_life;
-	t_mutex			*full;
-	int				nb_meal;
-	int				nb_philo;
-	int				time_die;
-	int				time_eat;
-	int				time_sleep;
-	int				time_think;
-	pthread_mutex_t	*start;
-
-}				t_init;
-
-typedef struct s_env
-{
-	t_init			init;
-	t_mutex			check_life;
-	t_mutex			full;
-	t_mutex			*last_meal;
-	pthread_mutex_t	*fork;
-	pthread_mutex_t	start;
-}					t_env;
+	size_t	death_time;
+	size_t	eat_time;
+	size_t	sleep_time;
+	size_t	start_time;
+	int		meals_nb;
+	int		philo_nbr;
+	pthread_mutex_t	last_meal;
+}t_data;
 
 typedef struct s_philo
 {
-	t_init			*data;
-	pthread_mutex_t	*fork_left;
-	pthread_mutex_t	*fork_right;
-	t_mutex			*last_meal;
-	int				meal_eaten;
-	int				philo_id;
-	pthread_t		thread_id;
-}					t_philo;
+	t_mutex	*nb_full;
+	t_mutex	*end;
+	pthread_mutex_t	left_fork;
+	pthread_mutex_t *right_fork;
+	size_t think_time;
+	t_data	*data;
+	int philo_id;
+	size_t	last_meal;
+	// size_t last_meal;
+	pthread_t thread_id;
+	
+}t_philo;
 
-void	eating(t_philo *philo);
-int		check_nb_meal(t_philo *philo);;
-void	*in_thread(void *thread_info);
-int		ft_strcmp(char *s, char *s1);
-int		print_error(char *s);
-void	print(char *s, t_philo *philo);
-void	take_mutex(void *mutex, char *s, t_philo *philo);
-void	release_mutex(void *mutex);
-int		take_fork(t_philo *philo);
-void	release_fork(t_philo *philo);
-int		check_death(t_philo *philo, t_init init, int *index, t_env *env);
-void	monitoring(t_env *env, t_philo *philo);
-int		verif_arg(char *s, int *nb);
-int		check_args(int ac, char **av, t_init *init);
-int		init_mutex(t_env *env, t_philo **philo);
-void	init_struct_philo(t_env *env, t_philo *philo, int i);
-int		init_philo(t_env *env, t_philo *philo);
-void	join_thread(t_init init, t_philo *philo);
-void	destroy_mutex(t_env *env);
-void	destroy_env(t_env *env, t_philo *philo);
-int		ft_space(char c);
-void	ft_skip(char *s, int *i, int *sign);
-int		ft_isdigit(char c);
-int		ft_atoi(char *nbr, int *nb);
-t_ull	get_time(void);
-int		create_meal(t_env *env);
-int		create_fork(t_env *env);
-int		get_mutex(t_philo *philo, t_env *env);
-int		get_think_time(t_init *init);
-void	init_struct_philo(t_env *env, t_philo *philo, int i);
-void	set_death(t_env *env, int i);
-int		verif_arg(char *s, int *nb);
-int		check_args(int ac, char **av, t_init *init);
-void	del_meal(int i, t_env *env);
-void	del_fork(int i, t_env *env);
+typedef struct s_init
+{
+	// pthread_mutex_t *forks;
+	// pthread_mutex_t *last_meal;
+	t_philo	*philos;
+	t_data	data;
+	t_mutex	nb_full;
+	t_mutex	end;
+	int		philo_number;
+}t_init;
+
+
+
+//util a delete du .h
+int	itoa(char buffer[], size_t nbr);
+
+//string util
+int		ft_strlen(char *str);
+int	ft_strcpy(char buffer[], char const *const src);
+
+//parsing
+bool	ft_atoi(char const *const str, int *const res);
+bool	parse_args(t_init *philo_data, char const *const args[], int size);
+
+//print
+void	print(t_mutex *end, int id, char *message);
+
+//time
+size_t	get_time_from_start(bool init);
+
+//init
+bool create_mutex(t_init *philo_data);
+
+void *routine(void *var);
+
+bool is_end(t_mutex *end);
+
+void reverse(char *start, char *end);
+
+size_t do_operation(size_t *nbr, size_t limit, size_t add);
 
 #endif

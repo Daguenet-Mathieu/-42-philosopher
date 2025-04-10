@@ -1,10 +1,9 @@
-MANDATORY_DIR=philo2/
 
-NAME = philo2/philo
-NAMEBONUS = philo/philo_bonus
+NAME = philo
+NAMEBONUS = philo_bonus
 
 
-HEADER = philo2/philo.h
+HEADER = philo.h
 
 SRCS = main.c\
 	atoi.c\
@@ -19,12 +18,12 @@ SRCS = main.c\
 	print.c\
 	strcpy.c\
 
-OBJS = $(addprefix $(MANDATORY_DIR), $(SRCS:.c=.o))
-DEPS = $(addprefix $(MANDATORY_DIR), $(SRCS:.c=.d))
+OBJS = $(SRCS:.c=.o)
+DEPS = $(SRCS:.c=.d)
 
 CC = cc
 
-FLAGS = -Wall -Werror -Wextra -g
+FLAGS = -Wall -Werror -Wextra -g #-fsanitize=thread
 
 $(NAME) : $(OBJS) $(HEADER)
 		 $(CC) $(FLAGS) $(OBJS) -o $(NAME)
