@@ -1,64 +1,59 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   atoi.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/27 06:01:59 by madaguen          #+#    #+#             */
-/*   Updated: 2023/04/11 21:54:02 by madaguen         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "philo.h"
 
-int	ft_space(char c)
+static int	skip_white_space(char const *const str, int i)
 {
-	if ((c <= 13 && c >= 9) || c == 32)
-		return (1);
-	return (0);
-}
-
-void	ft_skip(char *s, int *i, int *sign)
-{
-	while (s[*i] && ft_space(s[*i]))
-		(*i)++;
-	if (s[*i] == '+' || s[*i] == '-')
+	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 	{
-		if (s[*i] == '-')
-			*sign = 1;
-		(*i)++;
-	}
-}
-
-int	ft_isdigit(char c)
-{
-	if (c >= 48 && c <= 57)
-		return (1);
-	return (0);
-}
-
-int	ft_atoi(char *nbr, int *nb)
-{
-	long	n;
-	int		sign;
-	int		v;
-	int		i;
-
-	sign = 0;
-	n = 0;
-	v = 1;
-	i = 0;
-	ft_skip(nbr, &i, &sign);
-	if (nbr[i] == 0)
-		return (0);
-	while (ft_isdigit(nbr[i]) && n <= INT_MAX)
-	{
-		n = n * 10 + nbr[i] - '0';
 		i++;
 	}
-	if (sign || n > (long)INT_MAX || nbr[i] != 0)
-		v = 0;
-	*nb = n;
-	return (v);
+	return (i);
+}
+
+static void	sign_op(bool sign, unsigned int tmp_res, int *const res)
+{
+	if (sign == true)
+	{
+		*res = (int)(tmp_res * -1);
+	}
+	else
+	{
+		*res = tmp_res;
+	}
+}
+
+static int	check_overflow(unsigned int tmp_res, bool sign)
+{
+	unsigned int const	min_int = (unsigned int)INT_MAX + 1;
+
+	if ((tmp_res > INT_MAX && !sign) || (tmp_res > min_int && sign))
+		return (false);
+	return (true);
+}
+
+bool	ft_atoi(char const *const str, int *const res)
+{
+	int				i;
+	unsigned int	tmp_res;
+	bool			sign;
+
+	tmp_res = 0;
+	sign = false;
+	i = skip_white_space(str, 0);
+	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			sign = true;
+		i++;
+	}
+	while (str[i] <= '9' && str[i] >= '0')
+	{
+		if ((tmp_res * 10 + (str[i] - '0')) / 10 != tmp_res)
+			return (false);
+		tmp_res = tmp_res * 10 + (str[i] - '0');
+		i++;
+	}
+	if (check_overflow(tmp_res, sign) == false || str[i] != 0)
+		return (false);
+	sign_op(sign, tmp_res, res);
+	return (true);
 }

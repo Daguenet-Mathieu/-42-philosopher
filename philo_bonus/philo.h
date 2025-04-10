@@ -1,58 +1,77 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: madaguen <madaguen@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/01 04:59:27 by madaguen          #+#    #+#             */
-/*   Updated: 2023/09/17 03:06:58 by madaguen         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef PHILO_H
 # define PHILO_H
+# include <limits.h>
 
 # include <stdlib.h>
 # include <stdio.h>
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include <string.h>
+//# include <string.h> //?
 # include <limits.h>
-# include <fcntl.h>
-# include <sys/stat.h>
-# include <semaphore.h>
+# include <stdbool.h>
+#include <fcntl.h>           /* For O_* constants */
+#include <sys/stat.h>        /* For mode constants */
+#include <semaphore.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <sys/wait.h> 
 
-typedef struct timeval		t_time;
-typedef unsigned long long	t_ull;
+# define ARG_ERROR "Error: Incorrect number of arguments.\n\
+Usage: ./philo number_of_philosophers time_to_die time_to_eat\
+ time_to_sleep [optional: number_of_meals]\n"
 
-typedef struct s_init
+ #define ARG_TYPE_ERROR "Error: Incorrect argument type.\n\
+ All arguments must be positive integers, \
+ within the range of the maximum value of an int.\n"
+  
+# define ALLOC_ERROR "failed to alloc required memory\n"
+
+# define FORK_ERROR "failed to init all philosophers in current environement\n"
+
+
+typedef struct timeval	t_time;
+
+typedef struct s_data
 {
-	int		nb_meal;
-	int		nb_philo;
-	int		time_die;
-	int		time_eat;
-	int		time_sleep;
-	t_ull	start_time;// a initialiser dans le thread ou dans le parent dans le futur et la simulation ne demarre que quand ce temps est atteint?
+	size_t	death_time;
+	size_t	eat_time;
+	size_t	sleep_time;
+	size_t	think_time;
+	int		nbr_allowed_meals;
+	int		philo_nbr;
+	sem_t *forks;
+	sem_t *print;
+	sem_t *meals_nb;
+	pid_t *philo_pids;
+}t_data;
 
-}		t_init;
+//util a delete du .h
+int	itoa(char buffer[], size_t nbr);
 
-typedef struct s_env
-{
-	sem_t	check_life;
-	sem_t	forks;
-	sem_t	full;
-	sem_t	start;
-	int	*philo_pid;
-	t_init	init;
-}		t_env;
+//string util
+int		ft_strlen(char *str);
+int		ft_strcpy(char buffer[], char const *const src);
 
-t_ull   get_time();
-void	routine(t_env env, philo_index);
-int	verif_arg(char *s, int *nb);
-int	check_args(int ac, char **av, t_init *init);
-int	init_philo(t_env *env);
-int	init_sem(char *name, int value);
+//parsing
+bool	ft_atoi(char const *const str, int *const res);
+bool	parse_args(t_data *data, char const *const args[], int size);
+
+//print
+void	print(t_data *data, size_t last_meal, int id, char *message);
+
+//time
+size_t	get_time_from_start(bool init);
+
+//init
+void    routine(t_data *data, int id);
+
+void is_end(t_data *data, size_t last_meal, int id);
+
+void reverse(char *start, char *end);
+
+size_t do_operation(size_t *nbr, size_t limit, size_t add);
+
+bool create_semaphores(t_data *data);
 
 #endif
