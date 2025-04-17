@@ -106,7 +106,7 @@ int main(int argc, char const *const argv[])
 
 	// test_atoi();
 	// test_itoa();
-    if (argc < 5)
+    if (argc < 5 || argc > 6)
 	{
         write(2, ARG_ERROR, ft_strlen(ARG_ERROR));
 		return (1);
